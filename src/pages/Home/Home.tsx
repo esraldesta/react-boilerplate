@@ -1,7 +1,11 @@
+import { InvitationForm } from '@/components/InvitationForm'
+import { StatusTable } from '@/components/StatusTable'
+
 function Home() {
   return (
-    <div>
-      <h1>Home</h1>
+    <div className="h-screen mx-10 flex flex-col items-center">
+      <InvitationForm />
+      <StatusTable />
     </div>
   )
 }
