@@ -136,25 +136,3 @@ export const Router = () => (
   </Routes>
 )
 ```
-
-## Control visibility of components
-
-Use the `CanAccess` component and pass `permissions` props to control the visibility of a component.
-
-```tsx
-import { CanAccess } from 'src/components'
-
-export function NavBar () {
-  return (
-    <>
-      {/*
-        the component is shown if the user has the permissions
-        `users.list` and `metrics.list`
-      */}
-      <CanAccess permissions={['users.list', 'metrics.list']}>
-        {/* YOUR COMPONENT HERE */}
-      </CanAccess>
-    </>
-  )
-}
-```

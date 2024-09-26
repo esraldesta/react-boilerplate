@@ -1,45 +1,49 @@
 import { useRoutePaths, useSession } from '@/hooks'
-import { Link } from 'react-router-dom'
-import { CanAccess } from '../CanAccess'
+import { Link, NavLink } from 'react-router-dom'
 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu'
+import { CircleUser } from 'lucide-react'
+
+import { Button } from '@/components/ui/button'
 function NavBar() {
-  const { isAuthenticated, user, signOut } = useSession()
-  const { LOGIN_PATH, METRICS_PATH, REGISTER_PATH, ROOT_PATH, USERS_PATH } =
-    useRoutePaths()
+  const { signOut } = useSession()
+  const { ROOT_PATH } = useRoutePaths()
 
   return (
-    <div>
-      <ul>
-        <li>
-          <Link to={LOGIN_PATH}>Login</Link>
-        </li>
-        <li>
-          <Link to={REGISTER_PATH}>Register</Link>
-        </li>
-        <li>
-          <Link to={ROOT_PATH}>Home</Link>
-        </li>
-
-        <CanAccess permissions={['users.list']}>
-          <li>
-            <Link to={USERS_PATH}>Users</Link>
-          </li>
-        </CanAccess>
-
-        <CanAccess permissions={['metrics.list']}>
-          <li>
-            <Link to={METRICS_PATH}>Metrics</Link>
-          </li>
-        </CanAccess>
-      </ul>
-
-      {isAuthenticated && (
-        <>
-          <span style={{ marginRight: 4 }}>{user?.email}</span>
-          <button onClick={signOut}>Logout</button>
-        </>
-      )}
-    </div>
+    <>
+      <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
+        <Link
+          to={ROOT_PATH}
+          className="flex items-center gap-2 text-lg font-semibold md:text-base"
+        >
+          <p>Logo</p>
+          <span className="sr-only">Dashboard</span>
+        </Link>
+        <div className="ml-auto flex-1 sm:flex-initial"></div>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="secondary" size="icon" className="rounded-full">
+              <CircleUser className="h-5 w-5" />
+              <span className="sr-only">Toggle user menu</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel>Profile</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>
+              <button onClick={signOut}>Logout</button>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+    </>
   )
 }
 
