@@ -11,6 +11,7 @@ import { Label } from '@/components/ui/label'
 import { api } from '@/services'
 import { FormEvent, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { ClosedEye, OpenedEye } from '@/components/Icons'
 
 export default function Register() {
   const navigate = useNavigate()
@@ -87,7 +88,7 @@ export default function Register() {
             )}
             <Input
               id="name"
-              placeholder="enter your name here..."
+              placeholder="Enter Name"
               value={name}
               onChange={(e) => {
                 setName(e.target.value)
@@ -103,7 +104,7 @@ export default function Register() {
             <Input
               id="email"
               type="email"
-              placeholder="enter your email here..."
+              placeholder="Enter Email"
               value={email}
               onChange={(e) => {
                 setEmail(e.target.value)
@@ -116,17 +117,32 @@ export default function Register() {
             {errors.password && (
               <div className="text-red-600 text-xs">{errors.password}</div>
             )}
-            <Input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => {
-                setPassword(e.target.value)
-              }}
-            />
+            <div className="relative">
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                placeholder="Enter Password"
+                onChange={(e) => {
+                  setPassword(e.target.value)
+                }}
+              />
+              <div
+                className="absolute top-3 right-2"
+                onClick={() => {
+                  togglePasswordVisibility()
+                }}
+              >
+                {passwordVisible ? <ClosedEye /> : <OpenedEye />}
+              </div>
+            </div>
           </div>
-          <Button className="w-full" onClick={handleSubmit}>
-            Create an account
+          <Button
+            className="w-full"
+            onClick={handleSubmit}
+            disabled={isLoading}
+          >
+            {isLoading ? 'Loading' : 'Create an account'}
           </Button>
         </div>
         <div className="mt-4 text-center text-sm">

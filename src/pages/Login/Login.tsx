@@ -12,16 +12,24 @@ import {
   CardTitle
 } from '@/components/ui/card'
 
+import { ClosedEye, OpenedEye } from '@/components/Icons'
+
 function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [loginRequestStatus, setLoginRequestStatus] = useState('success')
+  const [isloading, setIsLoading] = useState(false)
+  const [passwordVisible, setPasswordVisible] = useState(false)
+
   const { signIn } = useSession()
+
+  const togglePasswordVisibility = () => {
+    setPasswordVisible(!passwordVisible)
+  }
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
 
-    setLoginRequestStatus('loading')
+    setIsLoading(true)
 
     try {
       await signIn({ email, password })
@@ -32,13 +40,13 @@ function Login() {
        * an error handler can be added here
        */
     } finally {
-      setLoginRequestStatus('success')
+      setIsLoading(false)
     }
   }
 
   useEffect(() => {
     // clean the function to prevent memory leak
-    return () => setLoginRequestStatus('success')
+    return () => setIsLoading(false)
   }, [])
 
   return (
@@ -56,7 +64,7 @@ function Login() {
             <Input
               id="email"
               type="email"
-              placeholder="m@example.com"
+              placeholder="Enter Email"
               value={email}
               required
               onChange={(e) => {
@@ -68,18 +76,34 @@ function Login() {
             <div className="flex items-center">
               <Label htmlFor="password">Password</Label>
             </div>
-            <Input
-              id="password"
-              type="password"
-              required
-              value={password}
-              onChange={(e) => {
-                setPassword(e.target.value)
-              }}
-            />
+            <div className="relative">
+              <Input
+                id="password"
+                type={passwordVisible ? 'text' : 'password'}
+                required
+                placeholder="Enter Password"
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value)
+                }}
+              />
+              <div
+                className="absolute top-3 right-2"
+                onClick={() => {
+                  togglePasswordVisibility()
+                }}
+              >
+                {passwordVisible ? <ClosedEye /> : <OpenedEye />}
+              </div>
+            </div>
           </div>
-          <Button type="submit" className="w-full" onClick={handleSubmit}>
-            Login
+          <Button
+            type="submit"
+            className="w-full"
+            onClick={handleSubmit}
+            disabled={isloading}
+          >
+            {isloading ? 'Loading' : 'Login'}
           </Button>
         </div>
         <div className="mt-4 text-center text-sm">
