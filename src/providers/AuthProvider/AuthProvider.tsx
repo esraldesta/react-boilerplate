@@ -27,12 +27,9 @@ function AuthProvider(props: Props) {
 
     try {
       const response = await api.post('/auth/login', { email, password })
-      const { access, refresh } = response.data.tokens
-      const token = access.token
-      const refreshToken = refresh.refreshToken
-      const roles = [response.data.user.role]
+      const { accessToken: token, refreshToken } = response.data
       createSessionCookies({ token, refreshToken })
-      setUser({ email, permissions: [], roles })
+      setUser({ email, permissions: [], roles: response.data.user.roles })
       setAuthorizationHeader({ request: api.defaults, token })
     } catch (error) {
       const err = error as AxiosError
@@ -62,14 +59,10 @@ function AuthProvider(props: Props) {
       setLoadingUserData(true)
 
       try {
-        const decodedToken: { sub: string } = jwtDecode(token)
-        const userId = decodedToken.sub
-        const response = await api.get(`/users/${userId}`)
-
-        if (response?.data) {
-          const { email, permissions, roles } = response.data
-          setUser({ email, permissions, roles })
-        }
+        const decodedToken: { roles: string[]; email: string } =
+          jwtDecode(token)
+        const { roles, email } = decodedToken
+        setUser({ email, permissions: [], roles })
       } catch (error) {
         /**
          * an error handler can be added here

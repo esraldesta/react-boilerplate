@@ -16,7 +16,7 @@ function PrivateRoute(props: Props) {
   const { permissions, roles, redirectTo = '/login', children } = props
 
   const { isAuthenticated, user, loadingUserData } = useSession()
-  const { hasAllPermissions } = validateUserPermissions({
+  const { hasAllRoles } = validateUserPermissions({
     user,
     permissions,
     roles
@@ -30,7 +30,7 @@ function PrivateRoute(props: Props) {
     return <Navigate to={redirectTo} />
   }
 
-  if (!hasAllPermissions) {
+  if (!hasAllRoles) {
     return <Navigate to="/" />
   }
 

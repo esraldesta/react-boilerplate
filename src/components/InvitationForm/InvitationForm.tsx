@@ -1,4 +1,4 @@
-import { FormEvent } from 'react'
+import { FormEvent, useState } from 'react'
 import { Button } from '@/components/ui/button'
 
 import {
@@ -8,23 +8,45 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
+import { api } from '@/services'
+import { Attempt, Employee } from '@/pages/Home/Home'
 
-export default function InvitationForm() {
+interface InvitationFormProps {
+  employees: Employee[]
+  getAttempts: () => Promise<void>
+}
+
+export default function InvitationForm({
+  employees,
+  getAttempts
+}: InvitationFormProps) {
+  const [selectedEmail, setSelectedEmail] = useState<string>('')
+
   function handleSubmit(e: FormEvent) {
     e.preventDefault()
+    api
+      .post('/phishing/send-email', { email: selectedEmail })
+      .then(() => {
+        getAttempts()
+      })
+      .catch((err) => {
+        console.log(err)
+      })
   }
 
   return (
     <form onSubmit={handleSubmit}>
-      <h1 className="my-1">Select a user to send a span email to</h1>
-      <Select>
+      <h1 className="my-1">Select a user to send a spam email to</h1>
+      <Select onValueChange={setSelectedEmail}>
         <SelectTrigger>
           <SelectValue placeholder="Email" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="m@example.com">m@example.com</SelectItem>
-          <SelectItem value="m@google.com">m@google.com</SelectItem>
-          <SelectItem value="m@support.com">m@support.com</SelectItem>
+          {employees.map((user) => (
+            <SelectItem key={user._id} value={user.userId.email}>
+              {user.userId.email}
+            </SelectItem>
+          ))}
         </SelectContent>
       </Select>
       <Button size="sm" className="my-3" type="submit">

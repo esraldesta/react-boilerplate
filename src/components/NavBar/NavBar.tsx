@@ -13,7 +13,7 @@ import { CircleUser } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 function NavBar() {
-  const { signOut } = useSession()
+  const { signOut, user } = useSession()
   const { ROOT_PATH } = useRoutePaths()
 
   return (
@@ -27,6 +27,9 @@ function NavBar() {
           <span className="sr-only">Dashboard</span>
         </Link>
         <div className="ml-auto flex-1 sm:flex-initial"></div>
+        <div>
+          <p>{user?.email}</p>
+        </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="secondary" size="icon" className="rounded-full">
