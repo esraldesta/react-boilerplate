@@ -19,6 +19,9 @@ export default function Register() {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [jobTitle, setJobTitle] = useState('')
+  const [phoneNumber, setPhoneNumber] = useState('')
+  const [department, setDepartment] = useState('')
   const [errors, setErrors] = useState({})
   const [passwordVisible, setPasswordVisible] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -28,18 +31,33 @@ export default function Register() {
   }
 
   const handleSubmit = (e: FormEvent) => {
+    console.log({
+      name,
+      email,
+      password,
+      jobTitle,
+      phoneNumber,
+      department
+    })
+
     e.preventDefault()
     setIsLoading(true)
     api
       .post('/auth/register', {
         name,
         email,
-        password
+        password,
+        jobTitle,
+        phoneNumber,
+        department
       })
       .then(() => {
         setName('')
         setEmail('')
         setPassword('')
+        setJobTitle('')
+        setPhoneNumber('')
+        setDepartment('')
         setErrors({})
         setIsLoading(false)
         navigate('/')
@@ -112,6 +130,54 @@ export default function Register() {
               required
             />
           </div>
+          <div className="grid gap-2">
+            <Label htmlFor="phoneNumber">Phone Number</Label>
+            {errors.phoneNumber && (
+              <div className="text-red-600 text-xs">{errors.phoneNumber}</div>
+            )}
+            <Input
+              id="phoneNumber"
+              placeholder="Enter Phone Number"
+              value={phoneNumber}
+              onChange={(e) => {
+                setPhoneNumber(e.target.value)
+              }}
+              required
+            />
+          </div>
+
+          <div className="grid gap-2">
+            <Label htmlFor="jobTitle">Job Title</Label>
+            {errors.jobTitle && (
+              <div className="text-red-600 text-xs">{errors.jobTitle}</div>
+            )}
+            <Input
+              id="jobTitle"
+              placeholder="Enter job Title"
+              value={jobTitle}
+              onChange={(e) => {
+                setJobTitle(e.target.value)
+              }}
+              required
+            />
+          </div>
+
+          <div className="grid gap-2">
+            <Label htmlFor="department">Department</Label>
+            {errors.department && (
+              <div className="text-red-600 text-xs">{errors.department}</div>
+            )}
+            <Input
+              id="department"
+              placeholder="Enter Department"
+              value={department}
+              onChange={(e) => {
+                setDepartment(e.target.value)
+              }}
+              required
+            />
+          </div>
+
           <div className="grid gap-2">
             <Label htmlFor="password">Password</Label>
             {errors.password && (
